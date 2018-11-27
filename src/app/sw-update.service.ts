@@ -21,7 +21,7 @@ export class SWUpdateService {
     this.updates.available
       .subscribe(() => {
         this.snackBar
-          .open('גרסה חדשה זמינה. לחץ על "רענן"', 'רענן')
+          .open('גרסה חדשה זמינה', 'רענן')
           .onAction()
           .pipe(take(1))
           .subscribe(() => {
