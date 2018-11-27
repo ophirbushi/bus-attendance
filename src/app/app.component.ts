@@ -9,7 +9,7 @@ import { SWUpdateService } from './sw-update.service';
 export class AppComponent implements OnInit {
   searchString = '';
   students: string[] = [
-    'איתי כהן', 'אפרת מתן', 'בנימין בן ארצי', 'רחל שם-טוב', 'מקס ברטוב'
+    'איתי כהן', 'אפרת מתן', 'בנימין בן ארצי', 'רחל שם-טוב', 'מקס ברטוב', 'איתן מזרחי'
   ];
 
   constructor(private swUpdateService: SWUpdateService) { }
