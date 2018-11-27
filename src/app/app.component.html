@@ -1,20 +1,28 @@
-<mat-toolbar color="primary">
-  Bus Attendance App
+<mat-toolbar style="background: rgb(80, 80, 80); color: white;">
+  בדיקת נוכחות
 </mat-toolbar>
 
-<div class="container">
+<div class="container-fluid">
   <div class="row">
     <div class="col-12">
+      <mat-form-field>
+        <input matInput placeholder="חפש" [(ngModel)]="searchString">
+      </mat-form-field>
+
       <mat-list>
-        <mat-list-item *ngFor="let student of students; let last = last;">
-          <p matLine>
-            <swiper (indexChange)="onIndexChange($event)">
-              <div>
-                student {{student}}
-              </div>
-              <div style="background: green;">. </div>
-            </swiper>
-          </p>
+        <mat-list-item *ngFor="let student of students; let last = last;" [class.hide]="shouldHide(student)">
+          <swiper #swiper [config]="{speed: 400}" matLine (indexChange)="onIndexChange($event)"
+            (dblclick)="swiper.directiveRef.setIndex(2)">
+            <div class="list-item-content">
+              {{student}}
+            </div>
+            <div class="list-item-content steady">
+              {{student}}
+            </div>
+            <div class="list-item-content go">
+              {{student}}
+            </div>
+          </swiper>
           <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
         </mat-list-item>
       </mat-list>

@@ -6,11 +6,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  searchString = '';
   students: string[] = [
-    'a', 'b', 'c', 'd', 'e'
+    'a', 'b', 'c', 'd', 'ba'
   ];
 
   onIndexChange(index: number) {
+    console.log('onIndexChange', index);
+  }
 
+  shouldHide(student: string): boolean {
+    return this.searchString && student.toUpperCase().indexOf(this.searchString.toUpperCase()) === -1;
   }
 }
