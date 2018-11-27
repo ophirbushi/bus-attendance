@@ -3,10 +3,14 @@ export interface AppState {
 }
 
 export interface Person {
-  id: string;
+  _id: string;
   name: string;
   status: PersonStatus;
 }
 
 export type PersonStatus = 'absent' | 'attendingNoPermit' | 'attendingWithPermit';
 
+export interface SetPersonStatusPayload {
+  personId: string;
+  personStatus: PersonStatus;
+}

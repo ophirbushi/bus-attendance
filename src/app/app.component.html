@@ -10,9 +10,10 @@
       </mat-form-field>
 
       <mat-list>
-        <mat-list-item *ngFor="let person of persons$ | async; let last = last; let i = index;" [class.hide]="shouldHide(person.name)">
-          <swiper #swiper [config]="{speed: 400}" matLine (indexChange)="onIndexChange($event, i)"
-            (dblclick)="swiper.directiveRef.setIndex(2)">
+        <mat-list-item *ngFor="let person of persons$ | async; let last = last; let i = index;"
+          [class.hide]="shouldHide(person.name)">
+          <swiper #swiper [config]="{speed: 400}" matLine (indexChange)="onIndexChange($event, person)"
+            (S_INIT)="onAbc($event)" (dblclick)="swiper.directiveRef.setIndex(2)">
             <div class="list-item-content">
               {{person.name}}
             </div>

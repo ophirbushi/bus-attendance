@@ -5,14 +5,23 @@ import { appReducer } from './reducer';
 import { appInitialState } from './init';
 import { registerEffects } from './effects';
 import { NgModule } from '@angular/core';
+import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
 
-function generateStore() {
+function generateStore(db: AngularFirestore) {
   const store = new Store<AppState, AppActions>(appInitialState, appReducer);
-  registerEffects(store);
+  registerEffects(store, db);
   return store;
 }
 
 @NgModule({
-  providers: [{ provide: Store, useFactory: generateStore }]
+  imports: [
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
+  ],
+  providers: [
+    { provide: Store, useFactory: generateStore, deps: [AngularFirestore] }
+  ]
 })
 export class AppStoreModule { }

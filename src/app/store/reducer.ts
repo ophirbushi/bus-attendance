@@ -1,23 +1,27 @@
 import { Reducer } from 'roxanne';
-import { AppState } from './interfaces';
-import { AppActions, SetPersonStatusPayload } from './actions';
-import { PERSONS } from './mocks';
+import { AppState, SetPersonStatusPayload } from './interfaces';
+import { AppActions } from './actions';
 
 export const appReducer = new Reducer<AppState, AppActions>(
   function (state, action, payload) {
     if (this.is('setPersonStatus', action, payload)) {
       return setPersonStatus(state, payload);
     }
-    if (this.is('generatePersons', action)) {
-      return { ...state, persons: PERSONS.slice() };
+
+    if (this.is('fetchPersonsSuccess', action, payload)) {
+      return { ...state, persons: payload };
     }
+
     return state;
   }
 );
 
 function setPersonStatus(state: AppState, payload: SetPersonStatusPayload): AppState {
-  const { personIndex, personStatus } = payload;
+  const { personId, personStatus } = payload;
   const persons = state.persons.slice();
-  persons[personIndex].status = personStatus;
+  const index = persons.findIndex(p => p._id === personId);
+  if (index > -1) {
+    persons[index].status = personStatus;
+  }
   return { ...state, persons };
 }

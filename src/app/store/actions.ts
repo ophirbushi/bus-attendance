@@ -1,11 +1,7 @@
-import { PersonStatus } from './interfaces';
+import { SetPersonStatusPayload, Person } from './interfaces';
 
 export interface AppActions {
   setPersonStatus: SetPersonStatusPayload;
-  generatePersons: null;
-}
-
-export interface SetPersonStatusPayload {
-  personIndex: number;
-  personStatus: PersonStatus;
+  fetchPersons: null;
+  fetchPersonsSuccess: Person[];
 }
