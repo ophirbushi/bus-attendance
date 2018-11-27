@@ -10,6 +10,8 @@ import { SwiperModule } from 'ngx-swiper-wrapper';
 import { AppComponent } from './app.component';
 import { FilterPipe } from './filter.pipe';
 import { FormsModule } from '@angular/forms';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { FormsModule } from '@angular/forms';
     MatToolbarModule,
     MatListModule,
     MatInputModule,
-    SwiperModule
+    SwiperModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]
