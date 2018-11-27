@@ -1,6 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatToolbarModule, MatListModule } from '@angular/material';
+
+import { SwiperModule } from 'ngx-swiper-wrapper';
+
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -8,7 +14,11 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserAnimationsModule,
+    BrowserModule,
+    MatToolbarModule,
+    MatListModule,
+    SwiperModule
   ],
   providers: [],
   bootstrap: [AppComponent]
