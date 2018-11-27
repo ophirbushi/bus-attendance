@@ -9,7 +9,7 @@ import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestor
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 
-function generateStore(db: AngularFirestore) {
+export function generateStore(db: AngularFirestore) {
   const store = new Store<AppState, AppActions>(appInitialState, appReducer);
   registerEffects(store, db);
   return store;
