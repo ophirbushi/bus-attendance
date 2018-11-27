@@ -10,17 +10,17 @@
       </mat-form-field>
 
       <mat-list>
-        <mat-list-item *ngFor="let student of students; let last = last;" [class.hide]="shouldHide(student)">
-          <swiper #swiper [config]="{speed: 400}" matLine (indexChange)="onIndexChange($event)"
+        <mat-list-item *ngFor="let person of persons$ | async; let last = last; let i = index;" [class.hide]="shouldHide(person.name)">
+          <swiper #swiper [config]="{speed: 400}" matLine (indexChange)="onIndexChange($event, i)"
             (dblclick)="swiper.directiveRef.setIndex(2)">
             <div class="list-item-content">
-              {{student}}
+              {{person.name}}
             </div>
             <div class="list-item-content steady">
-              {{student}}
+              {{person.name}}
             </div>
             <div class="list-item-content go">
-              {{student}}
+              {{person.name}}
             </div>
           </swiper>
           <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
