@@ -3,4 +3,5 @@ export * from './effects';
 export * from './init';
 export * from './interfaces';
 export * from './reducer';
-export * from './store';
+export * from './store.module';
+export * from './state.service';

@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { AppStateService } from './state.service';
 
 export function generateStore(db: AngularFirestore) {
   const store = new Store<AppState, AppActions>(appInitialState, appReducer);
@@ -21,7 +22,8 @@ export function generateStore(db: AngularFirestore) {
     AngularFirestoreModule
   ],
   providers: [
-    { provide: Store, useFactory: generateStore, deps: [AngularFirestore] }
+    { provide: Store, useFactory: generateStore, deps: [AngularFirestore] },
+    AppStateService
   ]
 })
 export class AppStoreModule { }

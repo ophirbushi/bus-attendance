@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, AfterViewInit, QueryList, TrackByFunction } from '@angular/core';
 import { SWUpdateService } from './sw-update.service';
-import { Store } from 'roxanne';
-import { AppState, AppActions, Person, PersonStatus } from './store';
+import { Person, PersonStatus, AppStateService } from './store';
 import { Observable } from 'rxjs';
-import { take, filter } from 'rxjs/operators';
-import { SwiperComponent, SwiperDirective } from 'ngx-swiper-wrapper';
+import { take, filter, map, withLatestFrom, tap } from 'rxjs/operators';
+import { SwiperComponent } from 'ngx-swiper-wrapper';
 
 @Component({
   selector: 'app-root',
@@ -16,23 +15,44 @@ export class AppComponent implements OnInit, AfterViewInit {
   persons$: Observable<Person[]>;
   @ViewChildren(SwiperComponent) swiperComponents: QueryList<SwiperComponent>;
   private initialized = false;
+  trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
+
 
   constructor(
     private swUpdateService: SWUpdateService,
-    private store: Store<AppState, AppActions>
+    private stateService: AppStateService
   ) {
     this.swUpdateService.listenForUpdates();
   }
 
   ngOnInit() {
-    this.persons$ = this.store.select('persons');
-    this.store.dispatch('fetchPersons', null);
+    this.persons$ = this.stateService.selectPersons();
 
-
+    this.stateService.selectPersonStatusChange()
+      .pipe(
+        map(changeActions => changeActions.filter(a => a.payload.type === 'modified')),
+        map(changeActions => changeActions.map<Person>(a => ({ ...a.payload.doc.data(), _id: a.payload.doc.id, })))
+      )
+      .subscribe(changed => {
+        if (!changed.length) {
+          return;
+        }
+        setTimeout(() => {
+          this.persons$
+            .pipe(take(1))
+            .subscribe(persons => {
+              changed.forEach(c => {
+                console.log(c);
+                const index = persons.findIndex(p => p._id === c._id);
+                this.swiperComponents.toArray()[index].directiveRef.setIndex(this.statusToSlideIndex(c.status), 0, true);
+              });
+            });
+        }, 3000);
+      });
   }
 
   ngAfterViewInit() {
-    this.store.select('persons')
+    this.persons$
       .pipe(
         filter(persons => persons && persons.length > 0),
         take(1)
@@ -41,11 +61,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   onIndexChange(index: number, person: Person) {
+    console.log('onIndexChange', index, person);
+
     if (!this.initialized) {
       return;
     }
     const personStatus: PersonStatus = index === 0 ? 'absent' : index === 1 ? 'attendingNoPermit' : 'attendingWithPermit';
-    this.store.dispatch('setPersonStatus', { personStatus, personId: person._id });
+    this.stateService.dispatch('setPersonStatus', { personStatus, personId: person._id });
   }
 
   shouldHide(student: string): boolean {
