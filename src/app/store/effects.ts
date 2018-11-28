@@ -12,23 +12,8 @@ export function registerEffects(store: Store<AppState, AppActions>, db: AngularF
           setPersonStatus(actionPayloadPair.payload as SetPersonStatusPayload);
           break;
         }
-        case 'fetchPersons': {
-          fetchPersons();
-          break;
-        }
       }
     });
-
-  function fetchPersons() {
-    db.collection<Person>('persons').get()
-      .pipe(
-        take(1),
-        map(response => {
-          return response.docs.map(doc => ({ ...doc.data(), _id: doc.id }));
-        })
-      )
-      .subscribe(persons => store.dispatch('fetchPersonsSuccess', persons as any));
-  }
 
   function setPersonStatus(payload: SetPersonStatusPayload) {
     console.log('setting person status', payload);

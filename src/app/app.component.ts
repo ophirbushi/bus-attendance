@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChildren, AfterViewInit, QueryList, TrackByFunct
 import { SWUpdateService } from './sw-update.service';
 import { Person, PersonStatus, AppStateService } from './store';
 import { Observable } from 'rxjs';
-import { take, filter, map, withLatestFrom, tap } from 'rxjs/operators';
+import { take, filter, map, withLatestFrom, tap, delay } from 'rxjs/operators';
 import { SwiperComponent } from 'ngx-swiper-wrapper';
 
 @Component({
@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   persons$: Observable<Person[]>;
   @ViewChildren(SwiperComponent) swiperComponents: QueryList<SwiperComponent>;
   private initialized = false;
+  private lock = false;
   trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
 
 
@@ -29,25 +30,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.persons$ = this.stateService.selectPersons();
 
     this.stateService.selectPersonStatusChange()
-      .pipe(
-        map(changeActions => changeActions.filter(a => a.payload.type === 'modified')),
-        map(changeActions => changeActions.map<Person>(a => ({ ...a.payload.doc.data(), _id: a.payload.doc.id, })))
-      )
-      .subscribe(changed => {
-        if (!changed.length) {
-          return;
-        }
-        setTimeout(() => {
-          this.persons$
-            .pipe(take(1))
-            .subscribe(persons => {
-              changed.forEach(c => {
-                console.log(c);
-                const index = persons.findIndex(p => p._id === c._id);
-                this.swiperComponents.toArray()[index].directiveRef.setIndex(this.statusToSlideIndex(c.status), 0, true);
-              });
-            });
-        }, 3000);
+      .pipe(withLatestFrom(this.persons$))
+      .subscribe(([p, persons]) => {
+        this.lock = true;
+        const { _id, status } = p;
+        this.getSwiperByPersonId(persons, _id).directiveRef.setIndex(status, 0, true);
+        this.lock = false;
+        console.log('changed person', p, status);
       });
   }
 
@@ -55,19 +44,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.persons$
       .pipe(
         filter(persons => persons && persons.length > 0),
-        take(1)
+        take(1),
+        delay(100)
       )
-      .subscribe(this.onInitialPersonsLoaded.bind(this));
+      .subscribe(persons => this.onInitialPersonsLoaded(persons));
   }
 
-  onIndexChange(index: number, person: Person) {
-    console.log('onIndexChange', index, person);
-
-    if (!this.initialized) {
-      return;
-    }
-    const personStatus: PersonStatus = index === 0 ? 'absent' : index === 1 ? 'attendingNoPermit' : 'attendingWithPermit';
-    this.stateService.dispatch('setPersonStatus', { personStatus, personId: person._id });
+  onIndexChange(index: PersonStatus, person: Person) {
+    if (this.lock || !this.initialized) return;
+    console.log('index change!', index);
+    this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id });
   }
 
   shouldHide(student: string): boolean {
@@ -75,18 +61,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   onInitialPersonsLoaded(persons: Person[]) {
-    setTimeout(() => {
-      this.swiperComponents.forEach((swiper, i) => {
-        const person = persons[i];
-        swiper.directiveRef.setIndex(this.statusToSlideIndex(person.status), 0, true);
-      });
-      this.initialized = true;
-    }, 100);
+    for (const p of persons) {
+      const swiper = this.getSwiperByPersonId(persons, p._id);
+      swiper.directiveRef.setIndex(p.status, 0, true);
+    }
+    this.initialized = true;
   }
 
-  private statusToSlideIndex(status: PersonStatus): number {
-    if (status === 'absent') { return 0; }
-    if (status === 'attendingNoPermit') { return 1; }
-    if (status === 'attendingWithPermit') { return 2; }
+
+  private getSwiperByPersonId(persons: Person[], id: string): SwiperComponent {
+    const index = persons.findIndex(p => p._id === id);
+    return this.swiperComponents.toArray()[index];
   }
 }

@@ -8,10 +8,6 @@ export const appReducer = new Reducer<AppState, AppActions>(
       return setPersonStatus(state, payload);
     }
 
-    if (this.is('fetchPersonsSuccess', action, payload)) {
-      return { ...state, persons: payload };
-    }
-
     return state;
   }
 );

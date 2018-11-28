@@ -8,7 +8,11 @@ export interface Person {
   status: PersonStatus;
 }
 
-export type PersonStatus = 'absent' | 'attendingNoPermit' | 'attendingWithPermit';
+export enum PersonStatus {
+  Absent = 0,
+  AttendingNoPermit = 1,
+  AttendingWithPermit = 2
+}
 
 export interface SetPersonStatusPayload {
   personId: string;
