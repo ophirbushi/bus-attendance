@@ -5,14 +5,19 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12">
+      <button style="display: block; width: 24px;" mat-icon-button color="accent" (click)="toggleReadonlyMode()">
+        <mat-icon *ngIf="readonlyMode">lock</mat-icon>
+        <mat-icon *ngIf="!readonlyMode">lock_open</mat-icon>
+      </button>
+
       <mat-form-field>
         <input matInput placeholder="חפש" [(ngModel)]="searchString">
       </mat-form-field>
 
       <mat-list>
         <mat-list-item *ngFor="let person of persons$ | async; let last = last; let i = index; trackBy: trackByFn;"
-          [class.hide]="shouldHide(person.name)">
-          <swiper #swiper [config]="{speed: 400}" matLine (indexChange)="onIndexChange($event, person)"
+          [class.hide]="shouldHide(person.name)" [class.readonly]="readonlyMode">
+          <swiper #swiper matLine (indexChange)="onIndexChange($event, person)"
             (dblclick)="swiper.directiveRef.setIndex(2)">
             <div class="list-item-content">
               {{person.name}}

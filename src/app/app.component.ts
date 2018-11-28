@@ -11,13 +11,13 @@ import { SwiperComponent } from 'ngx-swiper-wrapper';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  readonlyMode = true;
   searchString = '';
   persons$: Observable<Person[]>;
   @ViewChildren(SwiperComponent) swiperComponents: QueryList<SwiperComponent>;
   private initialized = false;
   private lock = false;
   trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
-
 
   constructor(
     private swUpdateService: SWUpdateService,
@@ -68,6 +68,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.initialized = true;
   }
 
+  toggleReadonlyMode() {
+    this.readonlyMode = !this.readonlyMode;
+  }
 
   private getSwiperByPersonId(persons: Person[], id: string): SwiperComponent {
     const index = persons.findIndex(p => p._id === id);

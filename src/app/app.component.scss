@@ -15,6 +15,10 @@
   }
 }
 
+.readonly {
+  pointer-events: none;
+}
+
 .steady {
   background: #FFEB3B;
 }
