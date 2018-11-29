@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatToolbarModule, MatListModule, MatInputModule, MatSnackBarModule, MatIconModule, MatButtonModule } from '@angular/material';
+import {
+  MatToolbarModule, MatListModule, MatInputModule, MatSnackBarModule, MatIconModule, MatButtonModule,
+  MatCheckboxModule
+} from '@angular/material';
 
 import { SwiperModule } from 'ngx-swiper-wrapper';
 
@@ -31,6 +34,7 @@ import { environment } from '../environments/environment';
     MatSnackBarModule,
     MatIconModule,
     MatButtonModule,
+    MatCheckboxModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],

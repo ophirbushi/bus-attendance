@@ -13,6 +13,15 @@
     text-align: right !important;
     direction: rtl;
   }
+
+  mat-checkbox:not(:last-child) {
+    margin-left: 8px;
+  }
+
+  .mat-checkbox-label {
+    margin-right: 4px;
+  }
+
 }
 
 .app-content {

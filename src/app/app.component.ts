@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   searchString = '';
   persons$: Observable<Person[]>;
   @ViewChildren(SwiperComponent) swiperComponents: QueryList<SwiperComponent>;
+  readonly statusFilter: boolean[] = [true, true, true];
   private initialized = false;
   private lock = false;
   trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
@@ -56,8 +57,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id });
   }
 
-  shouldHide(student: string): boolean {
-    return this.searchString && student.toUpperCase().indexOf(this.searchString.toUpperCase()) === -1;
+  shouldHide(student: Person): boolean {
+    const { name, status } = student;
+    return !this.statusFilter[status] ||
+      (this.searchString && name.toUpperCase().indexOf(this.searchString.toUpperCase()) === -1);
   }
 
   onInitialPersonsLoaded(persons: Person[]) {

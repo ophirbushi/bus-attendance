@@ -14,9 +14,15 @@
         <input matInput placeholder="חפש" [(ngModel)]="searchString">
       </mat-form-field>
 
+      <div>
+        <mat-checkbox [(ngModel)]="statusFilter[0]">לא נוכחים</mat-checkbox>
+        <mat-checkbox [(ngModel)]="statusFilter[1]">נוכחים בלי אישור</mat-checkbox>
+        <mat-checkbox [(ngModel)]="statusFilter[2]">נוכחים עם אישור</mat-checkbox>
+      </div>
+
       <mat-list>
         <mat-list-item *ngFor="let person of persons$ | async; let last = last; let i = index; trackBy: trackByFn;"
-          [class.hide]="shouldHide(person.name)" [class.readonly]="readonlyMode">
+          [class.hide]="shouldHide(person)" [class.readonly]="readonlyMode">
           <swiper #swiper matLine (indexChange)="onIndexChange($event, person)"
             (dblclick)="swiper.directiveRef.setIndex(2)">
             <div class="list-item-content">
