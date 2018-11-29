@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { AdminComponent } from './admin/admin.component';
+import { AdminGuard } from './admin/admin.guard';
 
 @NgModule({
   imports: [
@@ -8,6 +10,11 @@ import { HomeComponent } from './home/home.component';
       {
         path: '',
         component: HomeComponent
+      },
+      {
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [AdminGuard]
       }
     ])
   ],

@@ -16,6 +16,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './home/home.module';
+import { AdminModule } from './admin/admin.module';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,10 @@ import { HomeModule } from './home/home.module';
     BrowserModule,
     AppRoutingModule,
     MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
     HomeModule,
+    AdminModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],

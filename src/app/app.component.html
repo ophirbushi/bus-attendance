@@ -1,5 +1,11 @@
 <mat-toolbar style="background: rgb(80, 80, 80); color: white;">
-  בדיקת נוכחות
+  <mat-toolbar-row>
+    <span routerLink="/">בדיקת נוכחות</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button routerLink="/admin">
+      <mat-icon>verified_user</mat-icon>
+    </button>
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <router-outlet></router-outlet>
