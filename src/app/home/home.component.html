@@ -21,15 +21,9 @@
           [class.hide]="shouldHide(person)" [class.readonly]="readonlyMode">
           <swiper #swiper matLine (indexChange)="onIndexChange($event, person)"
             (dblclick)="swiper.directiveRef.setIndex(2)">
-            <div class="list-item-content">
-              {{person.name}}
-            </div>
-            <div class="list-item-content steady">
-              {{person.name}}
-            </div>
-            <div class="list-item-content go">
-              {{person.name}}
-            </div>
+            <div class="list-item-content">{{person.name}}</div>
+            <div class="list-item-content steady">{{person.name}}</div>
+            <div class="list-item-content go">{{person.name}}</div>
           </swiper>
           <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
         </mat-list-item>
