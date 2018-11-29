@@ -11,30 +11,23 @@ import {
 import { SwiperModule } from 'ngx-swiper-wrapper';
 
 import { AppComponent } from './app.component';
-import { FilterPipe } from './filter.pipe';
-import { FormsModule } from '@angular/forms';
 import { AppStoreModule } from './store';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    FilterPipe
+    AppComponent
   ],
   imports: [
     AppStoreModule,
     BrowserAnimationsModule,
     BrowserModule,
-    FormsModule,
+    AppRoutingModule,
     MatToolbarModule,
-    MatListModule,
-    MatInputModule,
-    SwiperModule,
-    MatSnackBarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCheckboxModule,
+    HomeModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
