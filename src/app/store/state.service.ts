@@ -35,8 +35,8 @@ export class AppStateService {
       );
   }
 
-  selectPersonStatusChange() {
-    return this.db.collection<Person>('persons').snapshotChanges()
+  selectPersonStatusChange(bus: 'center' | 'haifa') {
+    return this.db.collection<Person>(bus).snapshotChanges()
       .pipe(
         map(changeActions => changeActions.filter(p => p.payload.type === 'modified')),
         map(changeActions => changeActions.map(a => this.actionToPersonWithId(a))),
