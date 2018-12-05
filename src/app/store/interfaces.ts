@@ -17,4 +17,5 @@ export enum PersonStatus {
 export interface SetPersonStatusPayload {
   personId: string;
   personStatus: PersonStatus;
+  bus: string;
 }

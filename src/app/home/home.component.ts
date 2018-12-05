@@ -13,9 +13,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   searchString = '';
   center$: Observable<Person[]>;
   haifa$: Observable<Person[]>;
-  @ViewChildren(SwiperComponent) swiperComponents: QueryList<SwiperComponent>;
+  @ViewChildren('centerSwiper') centerSwiperComponents: QueryList<SwiperComponent>;
+  @ViewChildren('haifaSwiper') haifaSwiperComponents: QueryList<SwiperComponent>;
   readonly statusFilter: boolean[] = [true, true, true];
-  private initialized = false;
+  private centerInit = false;
+  private haifaInit = false;
   private lock = false;
   trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
 
@@ -37,19 +39,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.persons$
-    //   .pipe(
-    //     filter(persons => persons && persons.length > 0),
-    //     take(1),
-    //     delay(100)
-    //   )
-    //   .subscribe(persons => this.onInitialPersonsLoaded(persons));
+    this.center$
+      .pipe(
+        filter(persons => persons && persons.length > 0),
+        take(1),
+        delay(100)
+      )
+      .subscribe(persons => this.onInitialPersonsLoaded(persons, 'center'));
+
+    this.haifa$
+      .pipe(
+        filter(persons => persons && persons.length > 0),
+        take(1),
+        delay(100)
+      )
+      .subscribe(persons => this.onInitialPersonsLoaded(persons, 'haifa'));
   }
 
-  onIndexChange(index: PersonStatus, person: Person) {
-    if (this.lock || !this.initialized) return;
-    console.log('index change!', index);
-  //  this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id });
+  onIndexChange(index: PersonStatus, person: Person, bus: 'center' | 'haifa') {
+    if (this.lock) return;
+    if (bus === 'center' && !this.centerInit) return;
+    if (bus === 'haifa' && !this.haifaInit) return;
+    if (bus !== 'center' && bus !== 'haifa') {
+      console.error('unknown bus', bus);
+      return;
+    }
+
+    console.log('index change!', index, bus);
+    this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id, bus });
   }
 
   shouldHide(student: Person): boolean {
@@ -58,20 +75,30 @@ export class HomeComponent implements OnInit, AfterViewInit {
       (this.searchString && name.toUpperCase().indexOf(this.searchString.toUpperCase()) === -1);
   }
 
-  onInitialPersonsLoaded(persons: Person[]) {
+  onInitialPersonsLoaded(persons: Person[], bus: 'center' | 'haifa') {
+    this.lock = true;
     for (const p of persons) {
-      const swiper = this.getSwiperByPersonId(persons, p._id);
+      const swiper = this.getSwiperByPersonId(persons, p._id, bus);
       swiper.directiveRef.setIndex(p.status, 0, true);
     }
-    this.initialized = true;
+    if (bus === 'center') {
+      this.centerInit = true;
+      console.log('this.centerInit = true');
+    }
+    if (bus === 'haifa') {
+      this.haifaInit = true;
+      console.log('this.haifaInit = true');
+    }
+    this.lock = false;
   }
 
   toggleReadonlyMode() {
     this.readonlyMode = !this.readonlyMode;
   }
 
-  private getSwiperByPersonId(persons: Person[], id: string): SwiperComponent {
+  private getSwiperByPersonId(persons: Person[], id: string, bus: 'center' | 'haifa'): SwiperComponent {
     const index = persons.findIndex(p => p._id === id);
-    return this.swiperComponents.toArray()[index];
+    const swipersList = bus === 'center' ? this.centerSwiperComponents : this.haifaSwiperComponents;
+    return swipersList.toArray()[index];
   }
 }

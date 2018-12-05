@@ -17,6 +17,6 @@ export function registerEffects(store: Store<AppState, AppActions>, db: AngularF
 
   function setPersonStatus(payload: SetPersonStatusPayload) {
     console.log('setting person status', payload);
-    db.doc<Person>(`persons/${payload.personId}`).update({ status: payload.personStatus });
+    db.doc<Person>(`${[payload.bus]}/${payload.personId}`).update({ status: payload.personStatus });
   }
 }

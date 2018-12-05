@@ -21,8 +21,8 @@
           <mat-list>
             <mat-list-item *ngFor="let person of center$ | async; let last = last; let i = index; trackBy: trackByFn;"
               [class.hide]="shouldHide(person)" [class.readonly]="readonlyMode">
-              <swiper #swiper matLine (indexChange)="onIndexChange($event, person)"
-                (dblclick)="swiper.directiveRef.setIndex(2)">
+              <swiper #centerSwiper matLine (indexChange)="onIndexChange($event, person, 'center')"
+                (dblclick)="centerSwiper.directiveRef.setIndex(2)">
                 <div class="list-item-content">{{person.name}}</div>
                 <div class="list-item-content steady">{{person.name}}</div>
                 <div class="list-item-content go">{{person.name}}</div>
@@ -35,8 +35,8 @@
           <mat-list>
             <mat-list-item *ngFor="let person of haifa$ | async; let last = last; let i = index; trackBy: trackByFn;"
               [class.hide]="shouldHide(person)" [class.readonly]="readonlyMode">
-              <swiper #swiper matLine (indexChange)="onIndexChange($event, person)"
-                (dblclick)="swiper.directiveRef.setIndex(2)">
+              <swiper #haifaSwiper matLine (indexChange)="onIndexChange($event, person, 'haifa')"
+                (dblclick)="haifaSwiper.directiveRef.setIndex(2)">
                 <div class="list-item-content">{{person.name}}</div>
                 <div class="list-item-content steady">{{person.name}}</div>
                 <div class="list-item-content go">{{person.name}}</div>
