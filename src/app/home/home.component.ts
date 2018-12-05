@@ -11,7 +11,8 @@ import { SwiperComponent } from 'ngx-swiper-wrapper';
 export class HomeComponent implements OnInit, AfterViewInit {
   readonlyMode = true;
   searchString = '';
-  persons$: Observable<Person[]>;
+  center$: Observable<Person[]>;
+  haifa$: Observable<Person[]>;
   @ViewChildren(SwiperComponent) swiperComponents: QueryList<SwiperComponent>;
   readonly statusFilter: boolean[] = [true, true, true];
   private initialized = false;
@@ -21,33 +22,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(private stateService: AppStateService) { }
 
   ngOnInit() {
-    this.persons$ = this.stateService.selectPersons();
+    this.center$ = this.stateService.selectCenter();
+    this.haifa$ = this.stateService.selectHaifa();
 
-    this.stateService.selectPersonStatusChange()
-      .pipe(withLatestFrom(this.persons$))
-      .subscribe(([p, persons]) => {
-        this.lock = true;
-        const { _id, status } = p;
-        this.getSwiperByPersonId(persons, _id).directiveRef.setIndex(status, 0, true);
-        this.lock = false;
-        console.log('changed person', p, status);
-      });
+    // this.stateService.selectPersonStatusChange()
+    //   .pipe(withLatestFrom(this.persons$))
+    //   .subscribe(([p, persons]) => {
+    //     this.lock = true;
+    //     const { _id, status } = p;
+    //     this.getSwiperByPersonId(persons, _id).directiveRef.setIndex(status, 0, true);
+    //     this.lock = false;
+    //     console.log('changed person', p, status);
+    //   });
   }
 
   ngAfterViewInit() {
-    this.persons$
-      .pipe(
-        filter(persons => persons && persons.length > 0),
-        take(1),
-        delay(100)
-      )
-      .subscribe(persons => this.onInitialPersonsLoaded(persons));
+    // this.persons$
+    //   .pipe(
+    //     filter(persons => persons && persons.length > 0),
+    //     take(1),
+    //     delay(100)
+    //   )
+    //   .subscribe(persons => this.onInitialPersonsLoaded(persons));
   }
 
   onIndexChange(index: PersonStatus, person: Person) {
     if (this.lock || !this.initialized) return;
     console.log('index change!', index);
-    this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id });
+  //  this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id });
   }
 
   shouldHide(student: Person): boolean {

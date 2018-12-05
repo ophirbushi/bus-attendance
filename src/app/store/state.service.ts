@@ -21,6 +21,20 @@ export class AppStateService {
       );
   }
 
+  selectHaifa(): Observable<Person[]> {
+    return this.db.collection<Person>('haifa').snapshotChanges()
+      .pipe(
+        map(response => response.map(a => this.actionToPersonWithId(a)))
+      );
+  }
+
+  selectCenter(): Observable<Person[]> {
+    return this.db.collection<Person>('center').snapshotChanges()
+      .pipe(
+        map(response => response.map(a => this.actionToPersonWithId(a)))
+      );
+  }
+
   selectPersonStatusChange() {
     return this.db.collection<Person>('persons').snapshotChanges()
       .pipe(
