@@ -23,6 +23,7 @@
   }
 
 }
+
 .readonly {
   pointer-events: none;
 }
@@ -47,4 +48,12 @@
   position: fixed;
   z-index: -1;
   visibility: hidden;
+}
+
+mat-list {
+  &:not(.visible) {
+    height: 1px;
+    z-index: -1;
+    visibility: hidden;
+  }
 }

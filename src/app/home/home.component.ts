@@ -9,6 +9,7 @@ import { SwiperComponent } from 'ngx-swiper-wrapper';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
+  bus: 'center' | 'haifa' = 'center';
   readonlyMode = true;
   searchString = '';
   center$: Observable<Person[]>;
@@ -67,6 +68,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     console.log('index change!', index, bus);
     this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id, bus });
+  }
+
+  setBus(bus: 'center' | 'haifa') {
+    this.bus = bus;
   }
 
   shouldHide(student: Person): boolean {
