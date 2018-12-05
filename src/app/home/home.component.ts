@@ -28,15 +28,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.center$ = this.stateService.selectCenter();
     this.haifa$ = this.stateService.selectHaifa();
 
-    // this.stateService.selectPersonStatusChange()
-    //   .pipe(withLatestFrom(this.persons$))
-    //   .subscribe(([p, persons]) => {
-    //     this.lock = true;
-    //     const { _id, status } = p;
-    //     this.getSwiperByPersonId(persons, _id).directiveRef.setIndex(status, 0, true);
-    //     this.lock = false;
-    //     console.log('changed person', p, status);
-    //   });
+    this.listenToPersonsChange('center');
+    this.listenToPersonsChange('haifa');
   }
 
   ngAfterViewInit() {
@@ -99,6 +92,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   toggleReadonlyMode() {
     this.readonlyMode = !this.readonlyMode;
+  }
+
+  private listenToPersonsChange(bus: 'center' | 'haifa') {
+    this.stateService.selectPersonStatusChange(bus)
+      .pipe(withLatestFrom(bus === 'center' ? this.center$ : this.haifa$))
+      .subscribe(([p, persons]) => {
+        this.lock = true;
+        const { _id, status } = p;
+        this.getSwiperByPersonId(persons, _id, bus).directiveRef.setIndex(status, 0, true);
+        this.lock = false;
+        console.log('changed person', p, status);
+      });
   }
 
   private getSwiperByPersonId(persons: Person[], id: string, bus: 'center' | 'haifa'): SwiperComponent {
