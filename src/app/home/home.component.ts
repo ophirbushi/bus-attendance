@@ -3,6 +3,7 @@ import { Person, PersonStatus, AppStateService } from '../store';
 import { Observable } from 'rxjs';
 import { take, filter, withLatestFrom, delay } from 'rxjs/operators';
 import { SwiperComponent } from 'ngx-swiper-wrapper';
+import { GROUPED } from '../grouped';
 
 @Component({
   templateUrl: './home.component.html',
@@ -12,6 +13,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   bus: 'center' | 'haifa' = 'center';
   readonlyMode = true;
   searchString = '';
+  haifaStation = '';
+  centerStation = '';
   center$: Observable<Person[]>;
   haifa$: Observable<Person[]>;
   @ViewChildren('centerSwiper') centerSwiperComponents: QueryList<SwiperComponent>;
@@ -20,6 +23,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private centerInit = false;
   private haifaInit = false;
   private lock = false;
+  private personStationDict = {};
   trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
 
   constructor(private stateService: AppStateService) { }
@@ -67,9 +71,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.bus = bus;
   }
 
-  shouldHide(student: Person): boolean {
+  shouldHide(student: Person, bus: 'center' | 'haifa'): boolean {
     const { name, status } = student;
+    const station = this.getStation(student.name, bus);
+
+    const shouldHideByStation = (bus === 'center' && this.centerStation && this.centerStation !== station)
+      || (bus === 'haifa') && this.haifaStation && this.haifaStation !== station;
+
     return !this.statusFilter[status] ||
+      shouldHideByStation ||
       (this.searchString && name.toUpperCase().indexOf(this.searchString.toUpperCase()) === -1);
   }
 
@@ -110,5 +120,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const index = persons.findIndex(p => p._id === id);
     const swipersList = bus === 'center' ? this.centerSwiperComponents : this.haifaSwiperComponents;
     return swipersList.toArray()[index];
+  }
+
+  private getStation(name: string, bus: 'center' | 'haifa'): string {
+    const cached = this.personStationDict[name];
+    if (cached) {
+      return cached;
+    }
+    const match = GROUPED[bus].find(p => p.name === name);
+    if (!match) {
+      console.error('could not find person station', { name, bus });
+      return;
+    }
+
+    this.personStationDict[name] = match.pickupStation;
+    return match.pickupStation;
   }
 }

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { HomeComponent } from './home.component';
 import {
   MatSnackBarModule, MatIconModule, MatButtonModule, MatCheckboxModule, MatListModule,
-  MatInputModule, MatTabsModule
+  MatInputModule, MatRadioModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +18,7 @@ import { SwiperModule } from 'ngx-swiper-wrapper';
     MatCheckboxModule,
     MatListModule,
     MatInputModule,
-    MatTabsModule,
+    MatRadioModule,
     FormsModule,
     SwiperModule
   ]

@@ -10,11 +10,25 @@
         <input matInput placeholder="חפש" [(ngModel)]="searchString">
       </mat-form-field>
 
-      <div>
+      <div style="margin-bottom: 14px;">
         <mat-checkbox [(ngModel)]="statusFilter[0]">לא נוכחים</mat-checkbox>
         <mat-checkbox [(ngModel)]="statusFilter[1]">נוכחים בלי אישור</mat-checkbox>
         <mat-checkbox [(ngModel)]="statusFilter[2]">נוכחים עם אישור</mat-checkbox>
       </div>
+
+
+      <mat-radio-group [hidden]="!(bus === 'center')" [(ngModel)]="centerStation">
+        <mat-radio-button value="">כל התחנות</mat-radio-button>
+        <mat-radio-button value="ירושלים בנייני-האומה">ירושלים בנייני האומה</mat-radio-button>
+        <mat-radio-button value="פונדק אלביס">פונדק אלביס</mat-radio-button>
+        <mat-radio-button value="תל-אביב ארלוזרוב">תל-אביב ארלוזרוב</mat-radio-button>
+      </mat-radio-group>
+
+      <mat-radio-group [hidden]="!(bus === 'haifa')" [(ngModel)]="haifaStation">
+        <mat-radio-button value="">כל התחנות</mat-radio-button>
+        <mat-radio-button value="קריון">קריון</mat-radio-button>
+        <mat-radio-button value="חיפה- לב המפרץ">חיפה לב המפרץ</mat-radio-button>
+      </mat-radio-group>
 
       <div style="margin-top: 16px;">
         <button style="width: 44%; height: 50px;" mat-raised-button [color]="bus === 'center' ? 'primary' : ''"
@@ -25,7 +39,7 @@
 
       <mat-list [class.visible]="bus === 'center'">
         <mat-list-item *ngFor="let person of center$ | async; let last = last; let i = index; trackBy: trackByFn;"
-          [class.hide]="shouldHide(person)" [class.readonly]="readonlyMode">
+          [class.hide]="shouldHide(person, 'center')" [class.readonly]="readonlyMode">
           <swiper #centerSwiper matLine (indexChange)="onIndexChange($event, person, 'center')"
             (dblclick)="centerSwiper.directiveRef.setIndex(2)">
             <div class="list-item-content">{{person.name}}</div>
@@ -37,7 +51,7 @@
       </mat-list>
       <mat-list [class.visible]="bus === 'haifa'">
         <mat-list-item *ngFor="let person of haifa$ | async; let last = last; let i = index; trackBy: trackByFn;"
-          [class.hide]="shouldHide(person)" [class.readonly]="readonlyMode">
+          [class.hide]="shouldHide(person, 'haifa')" [class.readonly]="readonlyMode">
           <swiper #haifaSwiper matLine (indexChange)="onIndexChange($event, person, 'haifa')"
             (dblclick)="haifaSwiper.directiveRef.setIndex(2)">
             <div class="list-item-content">{{person.name}}</div>
