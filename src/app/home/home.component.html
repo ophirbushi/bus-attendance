@@ -22,19 +22,19 @@
         <mat-radio-button value="ירושלים בנייני-האומה">ירושלים בנייני האומה</mat-radio-button>
         <mat-radio-button value="פונדק אלביס">פונדק אלביס</mat-radio-button>
         <mat-radio-button value="תל-אביב ארלוזרוב">תל-אביב ארלוזרוב</mat-radio-button>
+        <mat-radio-button value="חיפה- לב המפרץ">חיפה לב המפרץ</mat-radio-button>
       </mat-radio-group>
-
+<!-- 
       <mat-radio-group [hidden]="!(bus === 'haifa')" [(ngModel)]="haifaStation">
         <mat-radio-button value="">כל התחנות</mat-radio-button>
         <mat-radio-button value="קריון">קריון</mat-radio-button>
-        <mat-radio-button value="חיפה- לב המפרץ">חיפה לב המפרץ</mat-radio-button>
-      </mat-radio-group>
+      </mat-radio-group> -->
 
       <div style="margin-top: 16px;">
         <button style="width: 44%; height: 50px;" mat-raised-button [color]="bus === 'center' ? 'primary' : ''"
-          (click)="setBus('center')">מרכז</button>
+          (click)="setBus('center')">אוטובוס</button>
         <button style="width: 44%; height: 50px;" mat-raised-button [color]="bus === 'haifa' ? 'primary' : ''"
-          (click)="setBus('haifa')">חיפה</button>
+          (click)="setBus('haifa')">מיניבוס</button>
       </div>
 
       <mat-list [class.visible]="bus === 'center'">
