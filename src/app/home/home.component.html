@@ -41,7 +41,7 @@
         <mat-list-item *ngFor="let person of center$ | async; let last = last; let i = index; trackBy: trackByFn;"
           [class.hide]="shouldHide(person, 'center')" >
           <swiper #centerSwiper matLine (indexChange)="onIndexChange($event, person, 'center')"
-            (dblclick)="centerSwiper.directiveRef.setIndex(2)" [disabled]="readonlyMode">
+            (dblclick)="centerSwiper.directiveRef.setIndex(2)">
             <div class="list-item-content">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
             <div class="list-item-content steady">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
             <div class="list-item-content go">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
@@ -53,7 +53,7 @@
         <mat-list-item *ngFor="let person of haifa$ | async; let last = last; let i = index; trackBy: trackByFn;"
           [class.hide]="shouldHide(person, 'haifa')" >
           <swiper #haifaSwiper matLine (indexChange)="onIndexChange($event, person, 'haifa')"
-            (dblclick)="haifaSwiper.directiveRef.setIndex(2)" [disabled]="readonlyMode">
+            (dblclick)="haifaSwiper.directiveRef.setIndex(2)">
             <div class="list-item-content">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
             <div class="list-item-content steady">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
             <div class="list-item-content go">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
