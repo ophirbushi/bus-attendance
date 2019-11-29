@@ -1,0 +1,17 @@
+{
+    "riders": [
+        {
+            "firstName": "אלכס",
+            "lastName": "אלכסיי",
+            "name": "אלכס אלכסיי",
+            "phone": "1234567",
+            "parentName": "אלכסנדרה אלכסיי",
+            "parentPhone": "512512512",
+            "station": "קריון-קריית ביאליק",
+            "status": 0,
+            "gender": "M",
+            "grade": "12",
+            "townOfLiving": "קרית אתא"
+        }
+    ]
+}
