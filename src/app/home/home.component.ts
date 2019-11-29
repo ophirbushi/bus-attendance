@@ -5,6 +5,8 @@ import { BusGroupesState } from '../state/bus-groups.state';
 import { RidersState } from '../state/riders.state';
 import { Rider, RiderStatus } from '../models';
 import { DataService } from '../data/data.service';
+import { MatDialog } from '@angular/material/dialog';
+import { RiderDetailsModalComponent } from '../modals/rider-details-modal/rider-details-modal.component';
 
 @Component({
   templateUrl: './home.component.html',
@@ -45,7 +47,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private busGroupsState: BusGroupesState,
     private ridersState: RidersState,
-    private dataService: DataService
+    private dataService: DataService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -80,8 +83,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   showDetails(rider: Rider) {
-    alert(`טלפון: ${rider.phone}
-      טלפון של ההורים: ${rider.parentPhone}
-    `);
+    this.dialog.open(RiderDetailsModalComponent, { data: rider });
   }
 }

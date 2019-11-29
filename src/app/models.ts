@@ -22,4 +22,5 @@ export interface Rider {
     status: RiderStatus;
     phone: string;
     parentPhone: string;
+    parentName: string;
 }

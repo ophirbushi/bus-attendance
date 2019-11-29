@@ -12,10 +12,17 @@ import { HomeModule } from './home/home.module';
 import { AdminModule } from './admin/admin.module';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { RiderDetailsModalComponent } from './modals/rider-details-modal/rider-details-modal.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RiderDetailsModalComponent
+  ],
+  entryComponents: [
+    RiderDetailsModalComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -24,6 +31,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
+    MatDialogModule,
+    MatListModule,
     HomeModule,
     AdminModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
