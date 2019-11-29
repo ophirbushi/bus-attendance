@@ -104,6 +104,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.readonlyMode = !this.readonlyMode;
   }
 
+  showDetails(person) {
+    alert(`טלפון: ${person.phone}
+      טלפון של ההורים: ${person.parentPhone}
+    `)
+  }
+
   private listenToPersonsChange(bus: 'center' | 'haifa') {
     this.stateService.selectPersonStatusChange(bus)
       .pipe(withLatestFrom(bus === 'center' ? this.center$ : this.haifa$))
@@ -133,7 +139,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.personStationDict[name] = match.pickupStation;
-    return match.pickupStation;
+    this.personStationDict[name] = match.station;
+    return match.station;
   }
 }

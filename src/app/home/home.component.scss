@@ -55,6 +55,13 @@
   visibility: hidden;
 }
 
+.info-btn {
+  height: 25px;
+  widows: 25px;
+  line-height: 25px;
+  margin-right: 5px;
+}
+
 mat-list {
   &:not(.visible) {
     height: 1px;

@@ -12,19 +12,19 @@ export class AdminComponent implements OnInit {
   constructor(private db: AngularFirestore) { }
 
   ngOnInit() {
-    // console.log(GROUPED.haifa.length);
-    //     this.db.collection('haifa').valueChanges().subscribe(console.log);
+    console.log(GROUPED.center.length);
+    this.db.collection('center').valueChanges().subscribe(console.log);
 
-    // GROUPED.haifa.forEach(person => {
-    //   this.addPerson(person.name);
-    // });
+    GROUPED.center.forEach(person => {
+      this.addPerson(person);
+    });
   }
 
-  addPerson(name: string) {
+  addPerson(person) {
     // Persist a document id
-    // const id = this.db.createId();
-    // const person = { id, name, status: 0 };
-    // this.db.collection('haifa').doc(id).set(person);
+    const id = this.db.createId();
+    person = { ...person, id, status: 0 };
+    this.db.collection('center').doc(id).set(person);
   }
 
 }
