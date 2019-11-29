@@ -1,145 +1,87 @@
-import { Component, OnInit, ViewChildren, AfterViewInit, QueryList, TrackByFunction } from '@angular/core';
-import { Person, PersonStatus, AppStateService } from '../store';
-import { Observable } from 'rxjs';
-import { take, filter, withLatestFrom, delay } from 'rxjs/operators';
-import { SwiperComponent } from 'ngx-swiper-wrapper';
-import { GROUPED } from '../grouped';
+import { Component, OnInit, TrackByFunction, OnDestroy } from '@angular/core';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { BusGroupesState } from '../state/bus-groups.state';
+import { RidersState } from '../state/riders.state';
+import { Rider, RiderStatus } from '../models';
+import { DataService } from '../data/data.service';
 
 @Component({
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
-  bus: 'center' | 'haifa' = 'center';
+export class HomeComponent implements OnInit, OnDestroy {
+  private readonly _selectedBusGroupId = new BehaviorSubject<string>(null);
+  private readonly _statusFilter = new BehaviorSubject({ 0: true, 1: true, 2: true });
+  private readonly _searchString = new BehaviorSubject<string>('');
+  readonly busGroups$ = this.busGroupsState.busGroups$;
+  readonly riders$ = combineLatest(
+    this.ridersState.riders$,
+    this._selectedBusGroupId.asObservable(),
+    this._statusFilter.asObservable(),
+    this._searchString.asObservable()
+  ).pipe(
+    filter(([riders]) => riders != null),
+    map(([riders, selectedBusGroupId, statusFilter, searchString]) => {
+      return riders.filter((rider) => {
+        return (
+          rider != null &&
+          rider.busGroupId === selectedBusGroupId &&
+          statusFilter[rider.status] === true &&
+          rider.name.toLowerCase().includes(searchString.toLowerCase())
+        );
+      });
+    })
+  );
   readonlyMode = true;
-  searchString = '';
-  haifaStation = '';
-  centerStation = '';
-  center$: Observable<Person[]>;
-  haifa$: Observable<Person[]>;
-  @ViewChildren('centerSwiper') centerSwiperComponents: QueryList<SwiperComponent>;
-  @ViewChildren('haifaSwiper') haifaSwiperComponents: QueryList<SwiperComponent>;
-  readonly statusFilter: boolean[] = [true, true, true];
-  private centerInit = false;
-  private haifaInit = false;
-  private lock = false;
-  private personStationDict = {};
-  trackByFn: TrackByFunction<Person> = (i: number, p: Person) => p._id;
+  private readonly destroy = new Subject();
+  trackByFn: TrackByFunction<Rider> = (index, rider) => rider._id;
+  get selectedBusGroupId(): string { return this._selectedBusGroupId.getValue(); }
+  set selectedBusGroupId(value: string) { this._selectedBusGroupId.next(value); }
+  get statusFilter() { return this._statusFilter.getValue(); }
+  get searchString(): string { return this._searchString.getValue(); }
+  set searchString(value: string) { this._searchString.next(value); }
 
-  constructor(private stateService: AppStateService) { }
+  constructor(
+    private busGroupsState: BusGroupesState,
+    private ridersState: RidersState,
+    private dataService: DataService
+  ) { }
 
   ngOnInit() {
-    this.center$ = this.stateService.selectCenter();
-    this.haifa$ = this.stateService.selectHaifa();
-
-    this.listenToPersonsChange('center');
-    this.listenToPersonsChange('haifa');
+    this.busGroups$.pipe(
+      takeUntil(this.destroy),
+      filter(busGroups => busGroups != null && busGroups.length > 0),
+      take(1)
+    ).subscribe((busGroups) => {
+      this.selectedBusGroupId = busGroups[0]._id;
+    });
   }
 
-  ngAfterViewInit() {
-    this.center$
-      .pipe(
-        filter(persons => persons && persons.length > 0),
-        take(1),
-        delay(100)
-      )
-      .subscribe(persons => this.onInitialPersonsLoaded(persons, 'center'));
-
-    this.haifa$
-      .pipe(
-        filter(persons => persons && persons.length > 0),
-        take(1),
-        delay(100)
-      )
-      .subscribe(persons => this.onInitialPersonsLoaded(persons, 'haifa'));
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
-  onIndexChange(index: PersonStatus, person: Person, bus: 'center' | 'haifa') {
-    if (this.lock) return;
-    if (bus === 'center' && !this.centerInit) return;
-    if (bus === 'haifa' && !this.haifaInit) return;
-    if (bus !== 'center' && bus !== 'haifa') {
-      console.error('unknown bus', bus);
-      return;
-    }
-
-    console.log('index change!', index, bus);
-    this.stateService.dispatch('setPersonStatus', { personStatus: index, personId: person._id, bus });
-  }
-
-  setBus(bus: 'center' | 'haifa') {
-    this.bus = bus;
-  }
-
-  shouldHide(student: Person, bus: 'center' | 'haifa'): boolean {
-    const { name, status } = student;
-    const station = this.getStation(student.name, bus);
-
-    const shouldHideByStation = (bus === 'center' && this.centerStation && this.centerStation !== station)
-      || (bus === 'haifa') && this.haifaStation && this.haifaStation !== station;
-
-    return !this.statusFilter[status] ||
-      shouldHideByStation ||
-      (this.searchString && name.toUpperCase().indexOf(this.searchString.toUpperCase()) === -1);
-  }
-
-  onInitialPersonsLoaded(persons: Person[], bus: 'center' | 'haifa') {
-    this.lock = true;
-    for (const p of persons) {
-      const swiper = this.getSwiperByPersonId(persons, p._id, bus);
-      swiper.directiveRef.setIndex(p.status, 0, true);
-    }
-    if (bus === 'center') {
-      this.centerInit = true;
-      console.log('this.centerInit = true');
-    }
-    if (bus === 'haifa') {
-      this.haifaInit = true;
-      console.log('this.haifaInit = true');
-    }
-    this.lock = false;
+  setStatusFilter(index: number, value: boolean) {
+    this._statusFilter.next({ ...this.statusFilter, [index]: value });
   }
 
   toggleReadonlyMode() {
     this.readonlyMode = !this.readonlyMode;
   }
 
-  showDetails(person) {
-    alert(`טלפון: ${person.phone}
-      טלפון של ההורים: ${person.parentPhone}
-    `)
-  }
-
-  private listenToPersonsChange(bus: 'center' | 'haifa') {
-    this.stateService.selectPersonStatusChange(bus)
-      .pipe(withLatestFrom(bus === 'center' ? this.center$ : this.haifa$))
-      .subscribe(([p, persons]) => {
-        this.lock = true;
-        const { _id, status } = p;
-        this.getSwiperByPersonId(persons, _id, bus).directiveRef.setIndex(status, 0, true);
-        this.lock = false;
-        console.log('changed person', p, status);
-      });
-  }
-
-  private getSwiperByPersonId(persons: Person[], id: string, bus: 'center' | 'haifa'): SwiperComponent {
-    const index = persons.findIndex(p => p._id === id);
-    const swipersList = bus === 'center' ? this.centerSwiperComponents : this.haifaSwiperComponents;
-    return swipersList.toArray()[index];
-  }
-
-  private getStation(name: string, bus: 'center' | 'haifa'): string {
-    const cached = this.personStationDict[name];
-    if (cached) {
-      return cached;
-    }
-    const match = GROUPED[bus].find(p => p.name === name);
-    if (!match) {
-      console.error('could not find person station', { name, bus });
+  onRiderStatusChange(status: RiderStatus, rider: Rider) {
+    if (status === rider.status) {
       return;
     }
+    this.ridersState.setRiderStatus(rider._id, status);
+    this.dataService.updateRiderStatus(rider._id, status);
+  }
 
-    this.personStationDict[name] = match.station;
-    return match.station;
+  showDetails(rider: Rider) {
+    alert(`טלפון: ${rider.phone}
+      טלפון של ההורים: ${rider.parentPhone}
+    `);
   }
 }

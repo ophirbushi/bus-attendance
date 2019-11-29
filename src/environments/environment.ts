@@ -11,7 +11,9 @@ export const environment = {
     projectId: 'bus-attend',
     storageBucket: 'bus-attend.appspot.com',
     messagingSenderId: '310085950405'
-  }
+  },
+  ridersCollection: 'riders',
+  busGroupsCollection: 'bus-groups'
 };
 
 /*

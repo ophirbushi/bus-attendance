@@ -29,10 +29,6 @@
 
 }
 
-.readonly {
-  pointer-events: none;
-}
-
 .steady {
   background: #FFEB3B;
 }
@@ -47,6 +43,11 @@
   display: flex;
   align-items: center;
   padding: 10px;
+  height: 100%;
+}
+
+[matLine] {
+  height: 100%;
 }
 
 .hide {
@@ -62,10 +63,10 @@
   margin-right: 5px;
 }
 
-mat-list {
-  &:not(.visible) {
-    height: 1px;
-    z-index: -1;
-    visibility: hidden;
-  }
-}
+// mat-list {
+//   &:not(.visible) {
+//     height: 1px;
+//     z-index: -1;
+//     visibility: hidden;
+//   }
+// }

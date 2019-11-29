@@ -1,4 +1,4 @@
-<div class="app-content container-fluid">
+<div class="app-content container-fluid" *ngIf="busGroups$ | async as busGroups">
   <div class="row">
     <div class="col-12">
       <button style="display: block; width: 24px;" mat-icon-button color="accent" (click)="toggleReadonlyMode()">
@@ -11,52 +11,28 @@
       </mat-form-field>
 
       <div style="margin-bottom: 14px;">
-        <mat-checkbox [(ngModel)]="statusFilter[0]">לא נוכחים</mat-checkbox>
-        <mat-checkbox [(ngModel)]="statusFilter[1]">נוכחים בלי אישור</mat-checkbox>
-        <mat-checkbox [(ngModel)]="statusFilter[2]">נוכחים עם אישור</mat-checkbox>
+        <mat-checkbox [ngModel]="statusFilter[0]" (ngModelChange)="setStatusFilter(0, $event)">לא נוכחים</mat-checkbox>
+        <mat-checkbox [ngModel]="statusFilter[1]" (ngModelChange)="setStatusFilter(1, $event)">נוכחים בלי אישור
+        </mat-checkbox>
+        <mat-checkbox [ngModel]="statusFilter[2]" (ngModelChange)="setStatusFilter(2, $event)">נוכחים עם אישור
+        </mat-checkbox>
       </div>
 
-
-      <mat-radio-group [hidden]="!(bus === 'center')" [(ngModel)]="centerStation">
-        <mat-radio-button value="">כל התחנות</mat-radio-button>
-        <mat-radio-button value="ירושלים בנייני-האומה">ירושלים בנייני האומה</mat-radio-button>
-        <mat-radio-button value="פונדק אלביס">פונדק אלביס</mat-radio-button>
-        <mat-radio-button value="תל-אביב ארלוזרוב">תל-אביב ארלוזרוב</mat-radio-button>
-        <mat-radio-button value="חיפה- לב המפרץ">חיפה לב המפרץ</mat-radio-button>
+      <mat-radio-group *ngIf="busGroups.length" [(ngModel)]="selectedBusGroupId">
+        <mat-radio-button *ngFor="let group of busGroups" [value]="group._id">{{group.name}}</mat-radio-button>
       </mat-radio-group>
-<!-- 
-      <mat-radio-group [hidden]="!(bus === 'haifa')" [(ngModel)]="haifaStation">
-        <mat-radio-button value="">כל התחנות</mat-radio-button>
-        <mat-radio-button value="קריון">קריון</mat-radio-button>
-      </mat-radio-group> -->
 
-      <div style="margin-top: 16px;">
-        <button style="width: 44%; height: 50px;" mat-raised-button [color]="bus === 'center' ? 'primary' : ''"
-          (click)="setBus('center')">אוטובוס</button>
-        <button style="width: 44%; height: 50px;" mat-raised-button [color]="bus === 'haifa' ? 'primary' : ''"
-          (click)="setBus('haifa')">מיניבוס</button>
-      </div>
-
-      <mat-list [class.visible]="bus === 'center'">
-        <mat-list-item *ngFor="let person of center$ | async; let last = last; let i = index; trackBy: trackByFn;"
-          [class.hide]="shouldHide(person, 'center')" >
-          <swiper #centerSwiper matLine (indexChange)="onIndexChange($event, person, 'center')"
-            (dblclick)="centerSwiper.directiveRef.setIndex(2)">
-            <div class="list-item-content">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
-            <div class="list-item-content steady">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
-            <div class="list-item-content go">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
-          </swiper>
-          <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
-        </mat-list-item>
-      </mat-list>
-      <mat-list [class.visible]="bus === 'haifa'">
-        <mat-list-item *ngFor="let person of haifa$ | async; let last = last; let i = index; trackBy: trackByFn;"
-          [class.hide]="shouldHide(person, 'haifa')" >
-          <swiper #haifaSwiper matLine (indexChange)="onIndexChange($event, person, 'haifa')"
-            (dblclick)="haifaSwiper.directiveRef.setIndex(2)">
-            <div class="list-item-content">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
-            <div class="list-item-content steady">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
-            <div class="list-item-content go">{{person.name}} <button mat-icon-button class="info-btn" (click)="showDetails(person)"><mat-icon>info</mat-icon></button></div>
+      <mat-list>
+        <mat-list-item *ngFor="let rider of riders$ | async; let last = last; let i = index; trackBy: trackByFn;">
+          <div matLine *ngIf="readonlyMode">
+            <ng-container *ngTemplateOutlet="riderTpl; context: {rider: rider, status: rider.status}"></ng-container>
+          </div>
+          <swiper *ngIf="!readonlyMode" #swiper matLine [index]="rider.status"
+            (indexChange)="onRiderStatusChange($event, rider)" (dblclick)="swiper.directiveRef.setIndex(2)"
+            [disabled]="readonlyMode">
+            <ng-container *ngTemplateOutlet="riderTpl; context: {rider: rider, status: 0}"></ng-container>
+            <ng-container *ngTemplateOutlet="riderTpl; context: {rider: rider, status: 1}"></ng-container>
+            <ng-container *ngTemplateOutlet="riderTpl; context: {rider: rider, status: 2}"></ng-container>
           </swiper>
           <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
         </mat-list-item>
@@ -64,3 +40,12 @@
     </div>
   </div>
 </div>
+
+<ng-template #riderTpl let-rider="rider" let-status="status">
+  <div class="list-item-content" [ngClass]="{steady: status === 1, go: status === 2}">
+    <button mat-icon-button class="info-btn" (click)="showDetails(rider)">
+      <mat-icon>info</mat-icon>
+    </button>
+    <span>{{rider.name}}</span>
+  </div>
+</ng-template>
