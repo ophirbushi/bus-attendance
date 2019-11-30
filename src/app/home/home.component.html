@@ -22,6 +22,12 @@
         <mat-radio-button *ngFor="let group of busGroups" [value]="group._id">{{group.name}}</mat-radio-button>
       </mat-radio-group>
 
+      <div style="margin-top: 14px;" *ngIf="selectedBusGroup$ | async as selectedBusGroup">
+        <mat-checkbox *ngFor="let pickupPoint of selectedBusGroup.pickupPoints"
+          [ngModel]="pickupPointsFilter[pickupPoint._id]"
+          (ngModelChange)="setPickupPointsFilter(pickupPoint._id, $event)">{{pickupPoint.name}}</mat-checkbox>
+      </div>
+
       <mat-list>
         <mat-list-item *ngFor="let rider of riders$ | async; let last = last; let i = index; trackBy: trackByFn;">
           <div matLine *ngIf="readonlyMode">

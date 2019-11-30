@@ -1,5 +1,5 @@
 export interface BusPickupPoint {
-    id: string;
+    _id: string;
     name: string;
 }
 
@@ -19,6 +19,7 @@ export interface Rider {
     _id: string;
     name: string;
     busGroupId: string;
+    pickupPointId: string;
     status: RiderStatus;
     phone: string;
     parentPhone: string;
