@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Rider, BusGroup, BusPickupPoint } from 'src/app/models';
-import { Observable, empty } from 'rxjs';
+import { Rider, BusPickupPoint } from 'src/app/models';
 
 @Component({
   selector: 'app-rider-details-modal',
