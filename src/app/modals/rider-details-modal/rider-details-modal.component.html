@@ -1,20 +1,26 @@
-<h1 mat-dialog-title>{{rider.name}}</h1>
-<div mat-dialog-content>
-  <mat-list role="list">
-    <mat-list-item role="listitem">
-      <span>טלפון:</span>
-      <span>{{rider.phone}}</span>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <span>שם הורה:</span>
-      <span>{{rider.parentName}}</span>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <span>טלפון של הורה:</span>
-      <span>{{rider.parentPhone}}</span>
-    </mat-list-item>
-  </mat-list>
-</div>
-<div mat-dialog-actions>
-  <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
-</div>
+<ng-container *ngIf="data?.rider as rider">
+  <h1 mat-dialog-title>{{rider.name}}</h1>
+  <div mat-dialog-content>
+    <mat-list role="list">
+      <mat-list-item role="listitem">
+        <span>טלפון:</span>
+        <span>&nbsp;{{rider.phone}}</span>
+      </mat-list-item>
+      <mat-list-item role="listitem">
+        <span>שם הורה:</span>
+        <span>&nbsp;{{rider.parentName}}</span>
+      </mat-list-item>
+      <mat-list-item role="listitem">
+        <span>טלפון של הורה:</span>
+        <span>&nbsp;{{rider.parentPhone}}</span>
+      </mat-list-item>
+      <mat-list-item role="listitem" *ngIf="pickupPointName">
+        <span>תחנת איסוף:</span>
+        <span>&nbsp;{{pickupPointName}}</span>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
+  </div>
+</ng-container>

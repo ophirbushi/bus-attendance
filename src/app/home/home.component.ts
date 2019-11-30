@@ -7,6 +7,7 @@ import { Rider, RiderStatus } from '../models';
 import { DataService } from '../data/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RiderDetailsModalComponent } from '../modals/rider-details-modal/rider-details-modal.component';
+import { snapshot } from '../utils/snapshot';
 
 @Component({
   templateUrl: './home.component.html',
@@ -112,6 +113,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   showDetails(rider: Rider) {
-    this.dialog.open(RiderDetailsModalComponent, { data: rider });
+    const selectedBusGroup = snapshot(this.selectedBusGroup$);
+    const pickupPoints = selectedBusGroup ? selectedBusGroup.pickupPoints : [];
+    this.dialog.open(RiderDetailsModalComponent, { data: { rider, pickupPoints } });
   }
 }
