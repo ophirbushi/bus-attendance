@@ -2,9 +2,16 @@
   <mat-toolbar-row>
     <span routerLink="/">בדיקת נוכחות</span>
     <span class="example-spacer"></span>
-    <!-- <button mat-icon-button routerLink="/admin">
-      <mat-icon>verified_user</mat-icon>
-    </button> -->
+    <button mat-icon-button [matMenuTriggerFor]="authMenu">
+      <mat-icon>person</mat-icon>
+    </button>
+    <mat-menu #authMenu>
+      <button mat-menu-item disabled style="color: initial;">{{(user$|async)?.displayName}}</button>
+      <button mat-menu-item (click)="signOut()">{{
+        (user$|async) ? 'צא' 
+         : 'היכנס'
+      }}</button>
+    </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
 

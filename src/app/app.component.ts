@@ -5,6 +5,7 @@ import { RidersState } from './state/riders.state';
 import { BusGroupesState } from './state/bus-groups.state';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +13,11 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+  user$ = this.authService.user$;
   private readonly destroy = new Subject();
 
   constructor(
+    private authService: AuthService,
     private swUpdateService: SWUpdateService,
     private busGroupsState: BusGroupesState,
     private ridersState: RidersState,
@@ -36,6 +39,13 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  signOut() {
+    this.authService.signOut()
+      .subscribe(() => {
+        location.href = location.href;
+      });
   }
 
 }
