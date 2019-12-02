@@ -1,12 +1,16 @@
-<!-- <div class="app-content container-fluid">
+<div class="app-content container-fluid">
   <div class="row">
     <div class="col-12">
-      <input id="file-upload-input" type='file' (change)="onFileInputChange($event)" name="fileName" />
-      <button mat-raised-button color="accent">
-        טען קובץ
-        <label id="file-trigger" for="file-upload-input"></label>
-      </button>
-      <textarea id="file-display" readonly [ngModel]="text"></textarea>
+      <h1>מסך ניהול</h1>
+
+      <div style="display: flex;">
+        <input id="file-upload-input" type='file' (change)="onFileInputChange($event)" name="fileName" />
+        <button mat-raised-button color="accent">
+          טען קובץ
+          <label id="file-trigger" for="file-upload-input"></label>
+        </button>
+        <textarea id="file-display" readonly></textarea>
+      </div>
     </div>
   </div>
-</div> -->
+</div>

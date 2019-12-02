@@ -17,6 +17,7 @@ import { RiderDetailsModalComponent } from './modals/rider-details-modal/rider-d
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatDialogModule,
     MatListModule,
     MatMenuModule,
+    MatProgressSpinnerModule,
     HomeModule,
     AdminModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

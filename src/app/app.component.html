@@ -5,6 +5,9 @@
     <button mat-icon-button [matMenuTriggerFor]="authMenu">
       <mat-icon>person</mat-icon>
     </button>
+    <button mat-icon-button routerLink="/admin" *ngIf="isAdmin$ | async">
+      <mat-icon>settings_applications</mat-icon>
+    </button>
     <mat-menu #authMenu>
       <button mat-menu-item disabled style="color: initial;">{{(user$|async)?.displayName}}</button>
       <button mat-menu-item (click)="signOut()">{{
@@ -14,5 +17,7 @@
     </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
+
+<mat-spinner *ngIf="loading$ | async"></mat-spinner>
 
 <router-outlet></router-outlet>

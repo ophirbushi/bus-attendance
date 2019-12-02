@@ -13,7 +13,8 @@ export const environment = {
     messagingSenderId: '310085950405'
   },
   ridersCollection: 'riders',
-  busGroupsCollection: 'bus-groups'
+  busGroupsCollection: 'bus-groups',
+  usersCollection: 'users'
 };
 
 /*

@@ -6,6 +6,8 @@ import { BusGroupesState } from './state/bus-groups.state';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
+import { UIState } from './state/ui.state';
+import { Router, NavigationStart, NavigationCancel, NavigationError, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +15,9 @@ import { AuthService } from './auth/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  user$ = this.authService.user$;
+  user$ = this.authService.authState$;
+  isAdmin$ = this.authService.isAdmin$;
+  loading$ = this.uiState.loading$;
   private readonly destroy = new Subject();
 
   constructor(
@@ -21,11 +25,26 @@ export class AppComponent implements OnInit, OnDestroy {
     private swUpdateService: SWUpdateService,
     private busGroupsState: BusGroupesState,
     private ridersState: RidersState,
-    private dataService: DataService
+    private uiState: UIState,
+    private dataService: DataService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.swUpdateService.listenForUpdates();
+
+    this.router.events.pipe(takeUntil(this.destroy))
+      .subscribe(event => {
+        if (event instanceof NavigationStart) {
+          this.uiState.setLoading(true);
+        } else if (
+          event instanceof NavigationEnd ||
+          event instanceof NavigationError ||
+          event instanceof NavigationCancel
+        ) {
+          this.uiState.setLoading(false);
+        }
+      });
 
     this.dataService.busGroups$
       .pipe(takeUntil(this.destroy))
