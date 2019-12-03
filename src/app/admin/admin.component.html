@@ -1,16 +1,64 @@
 <div class="app-content container-fluid">
   <div class="row">
     <div class="col-12">
-      <h1>מסך ניהול</h1>
+      <h1>Admin Screen</h1>
 
-      <div style="display: flex;">
+      <!-- <div style="display: flex;">
         <input id="file-upload-input" type='file' (change)="onFileInputChange($event)" name="fileName" />
         <button mat-raised-button color="accent">
           טען קובץ
           <label id="file-trigger" for="file-upload-input"></label>
         </button>
         <textarea id="file-display" readonly></textarea>
-      </div>
+      </div> -->
+
+      <mat-tab-group>
+        <mat-tab label="Bus Groups">
+
+          <div class="container-fluid bus-groups-container">
+            <button mat-mini-fab color="accent" class="add-bus-group-btn" (click)="addBusGroup()">
+              <mat-icon>add</mat-icon>
+            </button>
+
+
+            <form [formGroup]="busGroupsForm" class="row">
+              <div class="col-sm-12 col-md-6 col-lg-4"
+                *ngFor="let busGroupCtrl of busGroupsForm.controls; let i = index;">
+                <mat-card [formGroupName]="i">
+                  <div>
+                    <h3>Bus Group</h3>
+                    <mat-form-field>
+                      <input matInput placeholder="ID" formControlName="_id">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="Name" formControlName="name">
+                    </mat-form-field>
+                  </div>
+                  <div formGroupName="pickupPoints">
+                    <h3>Pickup Points</h3>
+                    <div *ngFor="let point of busGroupCtrl.get('pickupPoints')['controls']; let index = index;"
+                      [formGroupName]="index">
+                      <mat-form-field>
+                        <input matInput placeholder="ID" formControlName="_id">
+                      </mat-form-field>
+                      <mat-form-field>
+                        <input matInput placeholder="Name" formControlName="name">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+        <mat-tab label="Riders">
+
+        </mat-tab>
+      </mat-tab-group>
+
+
+
+
     </div>
   </div>
 </div>

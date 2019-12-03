@@ -1,3 +1,32 @@
+:host {
+  direction: ltr;
+  text-align: left;
+}
+
+.bus-groups-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.add-bus-group-btn {
+  margin-bottom: 20px;
+}
+
+mat-card {
+  margin-bottom: 20px;
+
+  mat-form-field {
+    width: calc(50% - 10px);
+
+    &:not(:last-child) {
+      margin-right: 20px;
+    }
+  }
+
+
+}
+
+
 #file-trigger {
   position: absolute;
   left: 0;
