@@ -1,32 +1,36 @@
-::ng-deep {
-  .mat-list-item-content {
-    padding: 0 !important;
-  }
+:host {
 
-  .mat-list-text,
-  swiper {
-    height: 100%;
-  }
 
-  input,
-  .mat-form-field-label {
-    text-align: right !important;
-    direction: rtl;
-  }
+  ::ng-deep {
+    .mat-list-item-content {
+      padding: 0 !important;
+    }
 
-  mat-checkbox:not(:last-child) {
-    margin-left: 8px;
-  }
+    .mat-list-text,
+    swiper {
+      height: 100%;
+    }
 
-  .mat-checkbox-label {
-    margin-right: 4px;
-  }
+    input,
+    .mat-form-field-label {
+      text-align: right !important;
+      direction: rtl;
+    }
 
-  .mat-radio-label-content {
-    padding-right: 8px !important;
-    margin-left: 12px;
-  }
+    mat-checkbox:not(:last-child) {
+      margin-left: 8px;
+    }
 
+    .mat-checkbox-label {
+      margin-right: 4px;
+    }
+
+    .mat-radio-label-content {
+      padding-right: 8px !important;
+      margin-left: 12px;
+    }
+
+  }
 }
 
 .steady {
